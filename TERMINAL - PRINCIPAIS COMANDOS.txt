@@ -1,0 +1,66 @@
+# TERMINAL - PRINCIPAIS COMANDOS
+# meu github: @mariaeco
+ 	password: pimpao2018
+
+PARA WINDOWS: ----------------------------------------------------------------------------------------------
+
+DIR - ver diretórios e pastas
+CLS - limpar screem
+DEL - deletar arquivo
+CD  - PARA ENTRAR EM PASTAS
+CD..- PARA SAIR DE PASTAS
+
+#--- C --------------------------------------------------------------------------
+*Para compilar programas:
+C:
+gcc -c main.c -o main  # o nome criado pode ser qualquer um
+no Windows:
+gcc -o main.exe main.c
+
+para rodar:
+no Linux e MAC:  ./main
+NO wINDOWS: main.exe
+
+Multiarquivo (arquivo das funcoes) em c:
+gcc -c funcao.c 
+gcc main.c funcao.c -o main.exe
+
+
+#--- C++ ------------------------------------------------------------------------
+C++: 
+g++ -o main main.cpp
+
+Multiarquivo (arquivo das funcoes) em c++:
+g++ -c funcao.cpp // arquivo.cpp de funcoes criar o arquivo .o
+g++ main.cpp funcao.o -o main.exe
+
+
+# Para mudar de partição --------------------------------------------------------------------
+Basta ir para o C:\ e digitar a:, e:, d:.. a particão que vc estiver utilizando
+
+PARA LINUX: -----------------------------------------------------------------------------------------------
+ls - LISTAR ARQUIVOS E PASTAS
+clear - limpar screem
+rm - deletar arquivo
+CD   - PARA ENTRAR EM PASTAS
+CD.. - PARA SAIR DE PASTAS
+
+VIM COMANDOS:
+vim arquivo.cpp ou vim arquivo.c # abre os aquivos
+i - para editar
+:wq - para sair e salvar
+
+USANDO MAKEFILE
+-------------------------------------------------------------------------------------
+Após criar o arquivo Makefile para rodar basta apenas digitar no terminal:
+	make nome_do_programa
+
+Exemplo:
+	make CadastroPessoas
+
+Então o projeto é compilado.
+Para rodar, basta:
+	./CadastroPessoas
+
+make clean para limpar os arquivos
+
