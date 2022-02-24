@@ -1,0 +1,332 @@
+// Lista CIRCULAR
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct no{
+    int dado;
+    struct no *proximo;
+}No;
+
+typedef struct{
+    No *inicio;
+    No *fim; //precisamos do ponteiro para o inicio e para o final
+    int tam;
+}Lista;
+
+
+//Funcao de criacao dos dados
+void criaLista(Lista *lista){
+    system("cls");
+    lista->inicio = NULL;
+    lista->fim = NULL;
+    lista->tam = 0;
+    printf("\n\nLista criada com sucesso!\n\n");
+    system("pause");
+}
+
+void insere_inicio(Lista *ll, int valor){ // recebera &lista // aqui eh uma passagem por referencia e ja altero aqui e nao apenas no return
+    No *novo;
+    novo = (No*)malloc(sizeof(No));
+
+    if(novo) {//verificando se alocou
+        novo->dado = valor;
+        novo->proximo = ll->inicio; //aponto para o conteudo apontado por ll
+        ll->inicio = novo;
+        if(ll->fim == NULL){
+            ll->fim = novo;
+        }
+        ll->fim->proximo = ll->inicio;
+        ll->tam++; //incrementando o campo tamanho
+    }else{
+        printf("Espaco nao armazenado!\n");
+    }
+}
+
+void insere_final(Lista *lista, int valor){ // recebera &lista // aqui eh uma passagem por referencia e ja altero aqui e nao apenas no return
+    No *aux, *novo;
+
+    novo = (No*)malloc(sizeof(No));
+    if(novo) {//verificando se alocou
+        novo->dado = valor;
+        novo->proximo = NULL; //ultimo no da nossa lista
+
+        if(lista->inicio == NULL){ //se o conteudo da posicao for nulo:lista vazia
+            lista->inicio = novo; //se tiver vazia, seu conteudo sera nosso novo no
+            lista->fim = novo;
+            lista->fim->proximo = lista->inicio;
+        }else{
+            lista->fim->proximo = novo;
+            lista->fim = novo;
+            //lista->fim->proximo = lista->inicio;
+            novo->proximo = lista->inicio; //acima faz o mesmo
+        }
+        lista->tam++;
+    }else{
+        printf("Espaco nao armazenado!\n");
+    }
+}
+
+void inserir_meio(Lista *lista, int valor, int ant){
+    No *aux, *novo;
+
+    if(novo) {//verificando se alocou
+        novo = (No*)malloc(sizeof(No));
+        novo->dado = valor;
+        if(lista->inicio == NULL){
+            novo->proximo = NULL; //se a lista for fazia, o proximo sera o primeiro q eh nulo
+            lista->inicio = novo;
+        }else{
+            aux = lista->inicio;
+            while(aux->dado !=ant && aux->proximo){ //&& aux->proximo existir
+                aux = aux->proximo;
+            }
+            novo->proximo = aux->proximo; //linkei o novo no com a parte final da lista
+            aux->proximo = novo;
+        }
+        lista->tam++;
+
+    }else{
+         printf("Espaco nao armazenado!\n");
+    }
+}
+
+void imprimir(Lista lista){
+    No *no = lista.inicio;
+
+    printf("\n\tLista Tamanho %d: ", lista.tam);
+    if(no){
+        do{
+            printf("%d->", no->dado);
+            no = no->proximo;
+        }while(no != lista.inicio);
+        printf("\nInicio: %d\n\n", no->dado);
+    }
+    system("pause");
+}
+
+void insereOrdenado(Lista *lista, int valor){
+    No *aux;
+    No *novo = (No*)malloc(sizeof(No));
+
+    if(novo){
+        novo->dado = valor;
+        if(lista->inicio == NULL){
+            insere_inicio(lista, valor);
+        }else if(novo->dado < lista->inicio->dado){
+            insere_inicio(lista, valor);
+        }else{
+            aux = lista->inicio;
+            while(aux->proximo != lista->inicio && novo->dado > aux->proximo->dado){
+                //enquanto proximo exister & valor for maior que aux guarda do proximo no, vamos caminhar na nossa lista
+                aux = aux->proximo;
+            }
+            if(aux->proximo == lista->inicio){
+                insere_final(lista, valor);
+            }else{
+                novo->proximo = aux->proximo;
+                aux->proximo = novo;
+                lista->tam++;
+            }
+        }
+    }else{
+        printf("Erro ao alocar memoria!\n");
+    }
+}
+
+void ConsultaVazia(Lista *lista){
+    if(lista->inicio == NULL){
+        printf("\nLista Vazia\n");
+    }else{
+        printf("\nLista iniciada\n");
+    }
+    system("pause");
+}
+
+void limparLista(Lista *lista){
+    No *no, *aux;
+    no = lista->inicio;
+
+    while (no != NULL){
+        aux = no;
+        no = no->proximo;
+        free (aux);
+    }
+    lista->inicio = NULL;
+    lista->tam = 0;
+    printf("Lista esvaziada com sucesso");
+    system("pause");
+}
+
+
+No *removerElem(Lista *l, int valor){ //retorna um ponteiro, pois altera
+    No *aux;
+    No *remover = NULL;// se nao encontrarmos o elemento, retornara nulo
+    
+    if(l->inicio == l->fim && l->inicio->dado == valor){
+        remover = l->inicio;
+        l->inicio = NULL;
+        l->fim = NULL;
+        l->tam--;
+    }
+    else if(l->inicio){
+        if(l->inicio->dado == valor){//conteudo do primeiro no da lista
+            remover = l->inicio;
+            l->inicio = remover->proximo;
+            l->fim->proximo = l->inicio;
+            l->tam--;
+        }else{
+            aux = l->inicio;
+            while(aux->proximo != l->inicio && aux->proximo->dado != valor){
+                aux = aux->proximo;
+            }
+            if(aux->proximo->dado == valor){
+                if(l->fim == aux->proximo){
+                    remover = aux->proximo;
+                    aux->proximo = remover->proximo;
+                    l->fim = aux;
+                }
+                else{
+                    remover = aux->proximo;
+                    aux->proximo = remover->proximo;
+                }
+                l->tam--;
+            }
+        }
+    }
+    return remover;
+}
+
+
+No *consultaValor(Lista *lista, int valor){//retorna um numero inteiro
+    No *aux;
+
+    aux = lista -> inicio;
+
+    if(aux){
+        do{
+            if(aux->dado == valor)
+                return aux;
+            aux = aux->proximo;
+        }while(aux != lista->inicio);
+            
+    }
+    return NULL;
+
+}
+
+void alteraElem(Lista *l, int valor, int new_valor){
+    No *no = NULL;
+    No *aux;
+
+    aux = l->inicio;
+    //percorrer a lista procurando o elemento
+    while(aux && aux->dado != valor){
+        aux = aux->proximo; //enquanto o valor nao for encontrado, segue para o proximo
+    }
+    if(aux){ //aux !=NULL
+        no = aux;//no recebe ponteiro para aux
+        no->dado = new_valor;
+        printf("Elemento alterado com sucesso: %d->%d\n\n", valor, no->dado);
+    }
+}
+
+
+
+int main(){
+
+    int op, valor, ant, new;
+    Lista lista;
+    No *removido, *elemento;
+
+
+    criaLista(&lista); //lista criada
+
+
+    //MEU MENU
+    do{
+        printf("\n\t0 - Sair");
+        printf("\n\t1 - Inserir no Inicio");
+        printf("\n\t2 - Inserir no Fim");
+        printf("\n\t3 - Inserir no Meio");
+        printf("\n\t4 - Insere ordenado");
+        printf("\n\t5 - Imprimir");
+        printf("\n\t6 - Verificar se eh vazia");
+        printf("\n\t7 - Limpar Lista");
+        printf("\n\t8 - Remover elemento");
+        printf("\n\t9 - Consulta Valor na Lista");
+        printf("\n\t10 - Altera Valor na Lista\n");
+        scanf("%d", &op);
+
+
+        switch (op)
+        {
+        case 1:
+            printf("insira um valor: ");
+            scanf("%d",&valor);
+            insere_inicio(&lista, valor);
+            break;
+        case 2:
+            printf("insira um valor: ");
+            scanf("%d",&valor);
+            insere_final(&lista, valor);
+            break;
+        case 3:
+            printf("insira um valor: ");
+            scanf("%d",&valor);
+            printf("insira o valor anterior: ");
+            scanf("%d",&ant);
+            inserir_meio(&lista, valor, ant);
+            break;
+        case 4:
+            printf("insira um valor: ");
+            scanf("%d",&valor);
+            insereOrdenado(&lista, valor);
+            break;
+        case 5:
+            imprimir(lista);
+            break;
+        case 6:
+            ConsultaVazia(&lista);
+            break;
+        case 7:
+            limparLista(&lista);
+            break;
+        case 8:
+            printf("insira um valor a ser removido: ");
+            scanf("%d",&valor);
+            removido = removerElem(&lista, valor);
+            if(removido){
+                printf("Elemento a ser removido: %d\n", removido->dado);
+                free(removido);
+            }else{
+                printf("Elemento inexistente.\n");
+            }
+            break;
+        case 9: //Consultar Valor
+            printf("Insira um valor para consulta: \n");
+            scanf("%i", &valor);
+            elemento = consultaValor(&lista, valor);
+            if(elemento){
+                printf("Elemento encontrado: %d\n", elemento->dado);
+            }else{
+                printf("Elemento inexistente.\n");
+            }
+            break;
+        case 10: //Altera Elemento
+            printf("Insira o valor para alteracao: \n");
+            scanf("%i", &valor);
+            printf("Insira o novo valor: \n");
+            scanf("%i", &new);
+            alteraElem(&lista, valor, new);
+            break;
+        default:
+            if(op!=0){
+                printf("Opcao invalida!\n");
+            }
+            break;
+        }
+
+    }while(op!=0);
+
+    return 0;
+}
